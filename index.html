@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Portfolio BIOS Boot Sequence</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="boot-screen" class="boot-screen">
+    <!-- Top Header (Fixed) -->
+    <div class="bios-header">
+      <div class="header-line">ROM PCI/ISA BIOS (KIAN2024)</div>
+      <div class="header-line">CMOS SETUP UTILITY</div>
+      <div class="header-line">AWARD SOFTWARE, INC.</div>
+    </div>
+
+    <!-- Separator Line -->
+    <div class="bios-separator"></div>
+
+    <!-- Middle Content Area (Scrollable) -->
+    <div class="bios-content">
+      <pre id="output" class="output"></pre>
+    </div>
+
+    <!-- Bottom Separator -->
+    <div class="bios-separator"></div>
+
+    <!-- Bottom Status Bar (Fixed) -->
+    <div class="bios-status">
+      <span id="status-text">Loading</span><span id="status-spinner" class="status-spinner"></span>
+    </div>
+  </div>
+
+  <!-- Your Windows 95-style portfolio (hidden initially) -->
+  <div id="main-content" class="main-content" style="display:none;">
+    <div class="win95-desktop">
+      <div class="win95-window">
+        <div class="title-bar">
+          <div class="title-bar-text">C:\PORTFOLIO\KIANKHOOBAN.EXE</div>
+          <div class="title-bar-controls">
+            <button aria-label="Minimize">_</button>
+            <button aria-label="Maximize">□</button>
+            <button aria-label="Close">×</button>
+          </div>
+        </div>
+        <div class="window-body">
+          <p>Microsoft(R) Windows 95</p>
+          <p>   (C)Copyright Microsoft Corp 1981-1995.</p>
+          <p></p>
+          <p>C:\PORTFOLIO> Welcome to Kian Khooban's Portfolio</p>
+          <p>C:\PORTFOLIO> Type 'help' for available commands</p>
+          <p>C:\PORTFOLIO> System ready.</p>
+          <p></p>
+          <p>C:\PORTFOLIO><span class="cursor-blink">_</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
