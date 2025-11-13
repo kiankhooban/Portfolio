@@ -3,6 +3,14 @@
    Theme System + All Components
    ======================================== */
 
+/* Custom Font */
+@font-face {
+  font-family: 'W95FA';
+  src: url(Fonts/W95FA.otf);
+  font-weight: normal;
+  font-style: normal;
+}
+
 /* Theme CSS Variables */
 :root {
   /* Original Windows 95 Theme (Default) */
@@ -70,7 +78,7 @@
 }
 
 body {
-  font-family: "MS Sans Serif", Arial, sans-serif;
+  font-family: 'W95FA', "MS Sans Serif", Arial, sans-serif;
   overflow: hidden;
   height: 100vh;
   background: var(--desktop-bg);
@@ -86,8 +94,9 @@ body {
   height: calc(100vh - 40px);
   padding: 10px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, 80px);
-  grid-auto-rows: 90px;
+  grid-template-rows: repeat(auto-fill, 90px);
+  grid-auto-columns: 80px;
+  grid-auto-flow: column;
   gap: 15px;
   align-content: start;
 }
@@ -181,7 +190,7 @@ body {
 }
 
 .start-text {
-  font-family: "MS Sans Serif", Arial, sans-serif;
+  font-family: 'W95FA', "MS Sans Serif", Arial, sans-serif;
 }
 
 /* Start Menu */
@@ -345,7 +354,7 @@ body {
   font-size: 11px;
   min-width: 60px;
   text-align: center;
-  font-family: "MS Sans Serif", Arial, sans-serif;
+  font-family: 'W95FA', "MS Sans Serif", Arial, sans-serif;
 }
 
 /* ========================================
@@ -665,7 +674,7 @@ body {
   padding: 4px;
   border: 2px solid;
   border-color: var(--button-shadow) var(--button-highlight) var(--button-highlight) var(--button-shadow);
-  font-family: "MS Sans Serif", Arial, sans-serif;
+  font-family: 'W95FA', "MS Sans Serif", Arial, sans-serif;
   font-size: 12px;
   background: white;
 }
@@ -805,7 +814,7 @@ body {
   border-color: var(--button-highlight) var(--button-shadow) var(--button-shadow) var(--button-highlight);
   cursor: pointer;
   font-size: 12px;
-  font-family: "MS Sans Serif", Arial, sans-serif;
+  font-family: 'W95FA', "MS Sans Serif", Arial, sans-serif;
   min-width: 80px;
   text-decoration: none;
   display: inline-block;
