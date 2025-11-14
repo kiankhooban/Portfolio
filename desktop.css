@@ -124,10 +124,14 @@ html, body, * {
 }
 
 .desktop-icon.selected {
-  background: #000080;
-  border: 1px dotted #ffffff;
-  outline: 1px dotted #000000;
-  outline-offset: -2px;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.desktop-icon.selected .icon-image {
+  background: rgba(0, 0, 128, 0.5);
+  padding: 2px;
 }
 
 .desktop-icon.selected .icon-label {
