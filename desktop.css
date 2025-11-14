@@ -86,10 +86,6 @@ body {
   transition: background 0.3s ease;
 }
 
-html, body, * {
-  cursor: url('./photos/cursor.png'), url('photos/cursor.png'), default !important;
-}
-
 /* ========================================
    DESKTOP
    ======================================== */
@@ -178,6 +174,7 @@ html, body, * {
 /* Start Button */
 .start-button {
   height: 36px;
+  width: 80px;
   padding: 0;
   background: var(--button-face);
   border: 2px solid;
@@ -187,6 +184,7 @@ html, body, * {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .start-button img {
