@@ -10,6 +10,8 @@ class DesktopManager {
     this.activeWindow = null;
     this.draggedWindow = null;
     this.dragOffset = { x: 0, y: 0 };
+    this.resizingWindow = null;
+    this.resizeDirection = null;
     this.currentTheme = 'original';
     
     this.init();
@@ -196,13 +198,22 @@ class DesktopManager {
       // Bring to front on click
       win.addEventListener('mousedown', () => this.focusWindow(win));
 
+      // Add resize handles
+      this.addResizeHandles(win);
+
       // Center window initially
       this.centerWindow(win);
     });
 
-    // Mouse move and up for dragging
-    document.addEventListener('mousemove', (e) => this.onDrag(e));
-    document.addEventListener('mouseup', () => this.endDrag());
+    // Mouse move and up for dragging and resizing
+    document.addEventListener('mousemove', (e) => {
+      this.onDrag(e);
+      this.onResize(e);
+    });
+    document.addEventListener('mouseup', () => {
+      this.endDrag();
+      this.endResize();
+    });
   }
 
   // ========================================
@@ -351,6 +362,8 @@ maximizeWindow(windowId) {
       win.element.style.height = win.originalSize.height;
       win.element.style.left = win.originalPosition.left;
       win.element.style.top = win.originalPosition.top;
+      win.element.style.maxWidth = '';
+      win.element.style.maxHeight = '';
     }
     win.maximized = false;
   } else {
@@ -370,6 +383,8 @@ maximizeWindow(windowId) {
     win.element.style.height = 'calc(100vh - 40px)'; // 40px = taskbar height
     win.element.style.left = '0';
     win.element.style.top = '0';
+    win.element.style.maxWidth = '100vw';
+    win.element.style.maxHeight = 'calc(100vh - 40px)'; // Override CSS max-height
     win.maximized = true;
   }
 }
@@ -439,6 +454,89 @@ maximizeWindow(windowId) {
     if (this.draggedWindow) {
       document.body.style.cursor = 'default';
       this.draggedWindow = null;
+    }
+  }
+
+  // ========================================
+  // RESIZING
+  // ========================================
+  addResizeHandles(windowEl) {
+    const directions = ['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw'];
+    
+    directions.forEach(direction => {
+      const handle = document.createElement('div');
+      handle.className = `resize-handle resize-${direction}`;
+      handle.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
+        this.startResize(e, windowEl, direction);
+      });
+      windowEl.appendChild(handle);
+    });
+  }
+
+  startResize(e, windowEl, direction) {
+    // Don't resize if maximized
+    const windowId = windowEl.id.replace('window-', '');
+    const win = this.windows[windowId];
+    if (win && win.maximized) return;
+
+    this.resizingWindow = windowEl;
+    this.resizeDirection = direction;
+    this.resizeStartX = e.clientX;
+    this.resizeStartY = e.clientY;
+    
+    const rect = windowEl.getBoundingClientRect();
+    this.resizeStartWidth = rect.width;
+    this.resizeStartHeight = rect.height;
+    this.resizeStartLeft = rect.left;
+    this.resizeStartTop = rect.top;
+    
+    e.preventDefault();
+  }
+
+  onResize(e) {
+    if (!this.resizingWindow) return;
+    
+    const deltaX = e.clientX - this.resizeStartX;
+    const deltaY = e.clientY - this.resizeStartY;
+    
+    let newWidth = this.resizeStartWidth;
+    let newHeight = this.resizeStartHeight;
+    let newLeft = this.resizeStartLeft;
+    let newTop = this.resizeStartTop;
+    
+    // Handle horizontal resizing
+    if (this.resizeDirection.includes('e')) {
+      newWidth = Math.max(400, this.resizeStartWidth + deltaX);
+    } else if (this.resizeDirection.includes('w')) {
+      newWidth = Math.max(400, this.resizeStartWidth - deltaX);
+      newLeft = this.resizeStartLeft + deltaX;
+      if (newWidth === 400) {
+        newLeft = this.resizeStartLeft + this.resizeStartWidth - 400;
+      }
+    }
+    
+    // Handle vertical resizing
+    if (this.resizeDirection.includes('s')) {
+      newHeight = Math.max(300, this.resizeStartHeight + deltaY);
+    } else if (this.resizeDirection.includes('n')) {
+      newHeight = Math.max(300, this.resizeStartHeight - deltaY);
+      newTop = this.resizeStartTop + deltaY;
+      if (newHeight === 300) {
+        newTop = this.resizeStartTop + this.resizeStartHeight - 300;
+      }
+    }
+    
+    this.resizingWindow.style.width = `${newWidth}px`;
+    this.resizingWindow.style.height = `${newHeight}px`;
+    this.resizingWindow.style.left = `${newLeft}px`;
+    this.resizingWindow.style.top = `${newTop}px`;
+  }
+
+  endResize() {
+    if (this.resizingWindow) {
+      this.resizingWindow = null;
+      this.resizeDirection = null;
     }
   }
 

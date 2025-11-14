@@ -119,8 +119,16 @@ body {
 }
 
 .desktop-icon.selected {
-  background: rgba(0, 0, 128, 0.3);
-  border: 2px dotted var(--win-white);
+  background: #000080;
+  border: 1px dotted #ffffff;
+  outline: 1px dotted #000000;
+  outline-offset: -2px;
+}
+
+.desktop-icon.selected .icon-label {
+  background: #000080;
+  color: #ffffff;
+  padding: 1px 2px;
 }
 
 .icon-image {
@@ -161,17 +169,24 @@ body {
 
 /* Start Button */
 .start-button {
-  height: 32px;
-  padding: 0 10px;
+  height: 36px;
+  padding: 0;
   background: var(--button-face);
   border: 2px solid;
   border-color: var(--button-highlight) var(--button-shadow) var(--button-shadow) var(--button-highlight);
-  font-weight: bold;
-  font-size: 13px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 5px;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.start-button img {
+  height: 100%;
+  width: 100%;
+  display: block;
+  pointer-events: none;
+  object-fit: fill;
 }
 
 .start-button:hover {
@@ -181,16 +196,6 @@ body {
 .start-button:active,
 .start-button.active {
   border-color: var(--button-shadow) var(--button-highlight) var(--button-highlight) var(--button-shadow);
-  padding-left: 11px;
-  padding-top: 1px;
-}
-
-.start-logo {
-  font-size: 16px;
-}
-
-.start-text {
-  font-family: 'W95FA', "MS Sans Serif", Arial, sans-serif;
 }
 
 /* Start Menu */
@@ -387,6 +392,76 @@ body {
   z-index: 1000;
 }
 
+/* Resize Handles */
+.resize-handle {
+  position: absolute;
+  z-index: 10;
+}
+
+.resize-n {
+  top: 0;
+  left: 4px;
+  right: 4px;
+  height: 4px;
+  cursor: ns-resize;
+}
+
+.resize-s {
+  bottom: 0;
+  left: 4px;
+  right: 4px;
+  height: 4px;
+  cursor: ns-resize;
+}
+
+.resize-e {
+  right: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 4px;
+  cursor: ew-resize;
+}
+
+.resize-w {
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 4px;
+  cursor: ew-resize;
+}
+
+.resize-ne {
+  top: 0;
+  right: 0;
+  width: 8px;
+  height: 8px;
+  cursor: nesw-resize;
+}
+
+.resize-nw {
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  cursor: nwse-resize;
+}
+
+.resize-se {
+  bottom: 0;
+  right: 0;
+  width: 8px;
+  height: 8px;
+  cursor: nwse-resize;
+}
+
+.resize-sw {
+  bottom: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  cursor: nesw-resize;
+}
+
 /* Title Bar */
 .title-bar {
   background: linear-gradient(90deg, var(--title-bar-start), var(--title-bar-end));
@@ -431,6 +506,15 @@ body {
   justify-content: center;
   padding: 0;
   line-height: 1;
+  overflow: hidden;
+}
+
+.title-bar-controls button img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: fill;
+  pointer-events: none;
 }
 
 .title-bar-controls button:hover {
