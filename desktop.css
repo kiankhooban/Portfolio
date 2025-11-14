@@ -108,13 +108,13 @@ html, body, * {
 
 /* Desktop Icons */
 .desktop-icon {
-  width: 80px;
+  width: 130px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  padding: 5px;
+  padding: 10px;
   border: 2px solid transparent;
   transition: background 0.1s;
 }
@@ -137,14 +137,14 @@ html, body, * {
 }
 
 .icon-image {
-  font-size: 42px;
+  font-size: 64px;
   margin-bottom: 4px;
   pointer-events: none;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
 .icon-label {
-  font-size: 11px;
+  font-size: 14px;
   color: var(--win-white);
   text-align: center;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
@@ -325,6 +325,7 @@ html, body, * {
   border: 2px solid;
   border-color: var(--button-highlight) var(--button-shadow) var(--button-shadow) var(--button-highlight);
   font-size: 12px;
+  font-family: 'W95FA', "MS Sans Serif", Arial, sans-serif;
   cursor: pointer;
   white-space: nowrap;
   overflow: hidden;
@@ -353,7 +354,7 @@ html, body, * {
   gap: 8px;
   border: 2px solid;
   border-color: var(--button-shadow) var(--button-highlight) var(--button-highlight) var(--button-shadow);
-  padding: 4px 8px;
+  padding: 4px 6px 4px 12px;
   height: 32px;
   background: var(--button-face);
 }
@@ -365,12 +366,11 @@ html, body, * {
 }
 
 .tray-clock {
-  border-left: 1px solid var(--win-dark-gray);
   padding-left: 8px;
 }
 
 .clock {
-  font-size: 11px;
+  font-size: 13px;
   min-width: 60px;
   text-align: center;
   font-family: 'W95FA', "MS Sans Serif", Arial, sans-serif;

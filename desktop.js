@@ -295,11 +295,11 @@ previewTheme(themeName) {
   }
 
   // Load saved theme from localStorage
-// Load saved theme from localStorage (DEFAULT: Colorful)
+// Load saved theme from localStorage (DEFAULT: Windows Standard)
 loadSavedTheme() {
   try {
     const savedTheme = localStorage.getItem('win95-theme');
-    const defaultTheme = 'colorful'; // NEW DEFAULT!
+    const defaultTheme = 'original'; // Windows Standard (Teal)
     const themeToLoad = savedTheme || defaultTheme;
     
     this.applyTheme(themeToLoad);
@@ -310,7 +310,7 @@ loadSavedTheme() {
     }
   } catch (e) {
     console.log('Could not load saved theme');
-    this.applyTheme('colorful'); // Fallback to colorful
+    this.applyTheme('original'); // Fallback to Windows Standard
   }
 }
 
