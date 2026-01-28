@@ -2,14 +2,13 @@
 
 <div align="center">
 
-![Windows 95](https://img.shields.io/badge/Windows-95-008080?style=for-the-badge&logo=windows95&logoColor=white)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 
-*A nostalgic trip back to 1995 with a fully interactive Windows 95-themed portfolio*
+*A fully interactive Windows 95-themed portfolio*
 
-[🌐 Live Demo](#) | [📧 Contact](mailto:kiankhooban@gmail.com) | [🐙 GitHub](https://github.com/kiankhooban)
+[🌐 Live Demo](https://kiankhooban.com) | [📧 Contact](mailto:kiankhooban@gmail.com) | [🐙 GitHub](https://github.com/kiankhooban)
 
 </div>
 
@@ -149,7 +148,7 @@ Portfolio/
 
 ## 🌐 Live Demo
 
-Visit the live site: [kiankhooban.com](#) *(or your custom domain)*
+Visit the live site: [kiankhooban.com](#) 
 
 ## 💡 Inspiration
 
@@ -164,33 +163,16 @@ I'm **Kian Khooban**, a second-year Computer Science student at York University 
 - 📚 Attention to detail
 - 💻 Computer history and nostalgia
 
-## 📸 Screenshots
 
-*Coming soon! (Add screenshots of your desktop with different themes)*
-
-## 🤝 Contributing
-
-Found a bug? Have an idea for a new feature (maybe actual Minesweeper)? Feel free to:
-1. Fork the repository
-2. Create a feature branch
-3. Submit a pull request
 
 ## 📜 License
 
 This project is open source and available under the [MIT License](LICENSE).
 
-## 🙏 Credits
-
-- **Windows 95 UI Design** - Microsoft Corporation (for the original inspiration)
-- **W95FA Font** - [Font creator/source]
-- **Icons** - Classic Windows 95 system icons
-
 ---
 
 <div align="center">
 
-**Built with ❤️ and nostalgia by Kian Khooban**
 
-⭐ Star this repo if you enjoyed the blast from the past!
 
 </div>
