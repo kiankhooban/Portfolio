@@ -150,20 +150,6 @@ Portfolio/
 
 Visit the live site: [kiankhooban.com](#) 
 
-## 💡 Inspiration
-
-This project was born from a love of retro computing and a desire to showcase skills in a unique, memorable way. Instead of another boring portfolio site, why not build something that stands out and brings a smile to people's faces?
-
-## 🎓 About Me
-
-I'm **Kian Khooban**, a second-year Computer Science student at York University and a part-time developer. I love building creative projects that merge technical skill with user experience. This portfolio represents my passion for:
-
-- 🎨 Creative web development
-- 🔧 Vanilla JavaScript mastery
-- 📚 Attention to detail
-- 💻 Computer history and nostalgia
-
-
 
 ## 📜 License
 
