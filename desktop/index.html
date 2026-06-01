@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kian Khooban - Portfolio</title>
+  <link rel="stylesheet" href="/desktop.css">
+</head>
+<body>
+  <!-- Desktop Area -->
+  <div class="desktop" id="desktop">
+    
+    <!-- Desktop Icons (Grid Layout) -->
+    <div class="desktop-icon" data-window="about">
+      <div class="icon-image">
+        <img src="/photos/computer_explorer-2.png" alt="Projects" style="width: 56px; height: 56px;">
+      </div>
+      <div class="icon-label">My Computer</div>
+    </div>
+
+    <div class="desktop-icon" data-window="projects">
+      <div class="icon-image">
+        <img src="/photos/address_book_card.png" alt="Projects" style="width: 56px; height: 56px;">
+      </div>
+      <div class="icon-label">Projects</div>
+    </div>
+
+    <div class="desktop-icon" data-window="resume">
+      <div class="icon-image">
+        <img src="/photos/script_file_blue-1.png" alt="Projects" style="width: 56px; height: 56px; margin-bottom: -8px;">
+      </div>
+      <div class="icon-label">Resume.txt</div>
+    </div>
+
+    <div class="desktop-icon" data-window="skills">
+      <div class="icon-image">
+        <img src="/photos/console_prompt-0.png" alt="Projects" style="width: 56px; height: 56px;">
+      </div>
+      <div class="icon-label">Skills.exe</div>
+    </div>
+
+    <div class="desktop-icon" data-window="contact">
+      <div class="icon-image">
+        <img src="/photos/contactInside.png" alt="Projects" style="width: 56px; height: 56px; margin-bottom: -8px;">
+      </div>
+      <div class="icon-label">Contact</div>
+    </div>
+
+    <div class="desktop-icon" data-window="control-panel">
+      <div class="icon-image">
+        <img src="/photos/Control_Panel_1995.svg" alt="Control Panel" style="width: 56px; height: 56px;">
+      </div>
+      <div class="icon-label">Control Panel</div>
+    </div>
+
+    <!-- GAMES TEMPORARILY DISABLED
+    <div class="desktop-icon" data-window="games">
+      <div class="icon-image">
+        <img src="/photos/computer_explorer-2.png" alt="Projects" style="width: 32px; height: 32px;">
+      </div>
+      <div class="icon-label">Games</div>
+    </div>
+    -->
+
+    <div class="desktop-icon" data-window="recycle">
+      <div class="icon-image">
+        <img src="/photos/conn_dialup_recbin_phone.png" alt="Projects" style="width: 56px; height: 56px;">
+      </div>
+      <div class="icon-label">Recycle Bin</div>
+    </div>
+
+  </div>
+
+  <!-- Taskbar -->
+  <div class="taskbar">
+    <button class="start-button" id="startButton">
+      <img src="/photos/Start_button_Windows_4.00.337.png" alt="Start">
+    </button>
+
+    <!-- Start Menu (hidden by default) -->
+    <div class="start-menu hidden" id="startMenu">
+      <div class="start-menu-sidebar">
+        <div class="start-menu-title">Windows <strong>95</strong></div>
+      </div>
+      <div class="start-menu-content">
+        <div class="start-menu-item" data-submenu="programs">
+          <span class="menu-icon"><img src="/photos/programs.png" alt=""></span>
+          <span class="menu-text">Programs</span>
+          <span class="menu-arrow">▶</span>
+        </div>
+        <div class="start-menu-item" data-window="control-panel">
+          <span class="menu-icon"><img src="/photos/Control_Panel_1995.svg" alt=""></span>
+          <span class="menu-text">Control Panel</span>
+        </div>
+        <div class="start-menu-item" data-submenu="documents">
+          <span class="menu-icon"><img src="/photos/documents.png" alt=""></span>
+          <span class="menu-text">Documents</span>
+          <span class="menu-arrow">▶</span>
+        </div>
+        <div class="start-menu-separator"></div>
+        <div class="start-menu-item" data-window="about">
+          <span class="menu-icon"><img src="/photos/computer_explorer-2.png" alt=""></span>
+          <span class="menu-text">About Me</span>
+        </div>
+        <!-- GAMES TEMPORARILY DISABLED
+        <div class="start-menu-item" data-window="games">
+          <span class="menu-icon"><img src="/photos/computer_explorer-2.png" alt=""></span>
+          <span class="menu-text">Games</span>
+        </div>
+        -->
+        <div class="start-menu-separator"></div>
+        <div class="start-menu-item shutdown">
+          <span class="menu-icon">🔌</span>
+          <span class="menu-text">Shut Down...</span>
+        </div>
+      </div>
+
+      <!-- Programs Submenu -->
+      <div class="start-submenu hidden" id="submenu-programs">
+        <div class="start-menu-item" data-window="about">
+          <span class="menu-icon"><img src="/photos/computer_explorer-2.png" alt=""></span>
+          <span class="menu-text">My Computer</span>
+        </div>
+        <div class="start-menu-item" data-window="projects">
+          <span class="menu-icon"><img src="/photos/address_book_card.png" alt=""></span>
+          <span class="menu-text">Projects</span>
+        </div>
+        <div class="start-menu-item" data-window="skills">
+          <span class="menu-icon"><img src="/photos/console_prompt-0.png" alt=""></span>
+          <span class="menu-text">Skills.exe</span>
+        </div>
+        <div class="start-menu-item" data-window="contact">
+          <span class="menu-icon"><img src="/photos/contactInside.png" alt=""></span>
+          <span class="menu-text">Contact</span>
+        </div>
+      </div>
+
+      <!-- Documents Submenu -->
+      <div class="start-submenu hidden" id="submenu-documents">
+        <div class="start-menu-item" data-window="resume">
+          <span class="menu-icon"><img src="/photos/script_file_blue-1.png" alt=""></span>
+          <span class="menu-text">Resume.txt</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Taskbar App Buttons (dynamically added) -->
+    <div class="taskbar-apps" id="taskbarApps"></div>
+
+    <!-- System Tray & Clock -->
+    <div class="system-tray">
+      <div class="tray-clock">
+        <div class="clock" id="clock">9:41 PM</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Windows Container -->
+  <div id="windowsContainer">
+    
+    <!-- About Me Window -->
+    <div class="window hidden" id="window-about" data-title="My Computer">
+      <div class="title-bar">
+        <div class="title-bar-text">
+          <span class="window-icon"><img src="/photos/computer_explorer-2.png" alt="" style="width: 16px; height: 16px;"></span>
+          My Computer
+        </div>
+        <div class="title-bar-controls">
+          <button class="btn-minimize" aria-label="Minimize"><img src="/photos/minimize.png" alt="_"></button>
+          <button class="btn-maximize" aria-label="Maximize"><img src="/photos/maximize.png" alt="□"></button>
+          <button class="btn-close" aria-label="Close"><img src="/photos/closeButton.png" alt="×"></button>
+        </div>
+      </div>
+      <div class="window-body">
+        <h2><img src="/photos/computer_explorer-2.png" alt="" style="width: 20px; height: 20px; vertical-align: middle;"> About Me</h2>
+        <div class="info-section">
+          <p><strong>Name:</strong> Kian Khooban</p>
+          <p><strong>Role:</strong> Software Engineer | Computer Science Student</p>
+          <p><strong>Location:</strong> Toronto, ON, Canada</p>
+          <p><strong>Email:</strong> kiankhooban@gmail.com</p>
+        </div>
+        <div class="bio-section">
+          <h3>Bio</h3>
+          <p>Second-Year Computer Science Student at Lassonde School of Engineering, York University. Part-Time Developer with experience in web development, renewable energy infrastructure, and community leadership.</p>
+          <p>Passionate about building innovative solutions and contributing to meaningful projects. Experienced in JavaScript, Java, C, and Linux systems. Strong background in project management, team collaboration, and academic mentorship.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Projects Window -->
+    <div class="window hidden" id="window-projects" data-title="Projects">
+      <div class="title-bar">
+        <div class="title-bar-text">
+          <span class="window-icon"><img src="/photos/address_book_card.png" alt="" style="width: 16px; height: 16px;"></span>
+          Projects
+        </div>
+        <div class="title-bar-controls">
+          <button class="btn-minimize"><img src="/photos/minimize.png" alt="_"></button>
+          <button class="btn-maximize"><img src="/photos/maximize.png" alt="□"></button>
+          <button class="btn-close"><img src="/photos/closeButton.png" alt="×"></button>
+        </div>
+      </div>
+      <div class="window-body">
+        <h2><img src="/photos/address_book_card.png" alt="" style="width: 20px; height: 20px; vertical-align: middle;"> My Projects</h2>
+        <div class="project-list">
+          <div class="project-item">
+            <div class="project-icon">⚡</div>
+            <div class="project-details">
+              <h3>Hoshmand Afarin Inc - Internal Website</h3>
+              <p class="project-desc">Developed internal website for renewable energy and Bitcoin mining startup, supporting infrastructure and software initiatives.</p>
+              <p class="project-tech"><em>Tech:</em> JavaScript, Node.js, HTML, CSS, Linux</p>
+              <div class="project-links">
+                <a href="https://github.com/kiankhooban" class="win95-button">GitHub</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="project-item">
+            <div class="project-icon">🎨</div>
+            <div class="project-details">
+              <h3>Windows 95 Portfolio Website</h3>
+              <p class="project-desc">A retro-inspired portfolio website with authentic Windows 95 UI, featuring draggable/resizable windows and theme customization.</p>
+              <p class="project-tech"><em>Tech:</em> JavaScript, HTML, CSS, Git</p>
+              <div class="project-links">
+                <a href="https://github.com/kiankhooban/Portfolio" class="win95-button">GitHub</a>
+                <a href="#" class="win95-button">Live Demo</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="project-item">
+            <div class="project-icon">🎁</div>
+            <div class="project-details">
+              <h3>GVSS Holiday Charity Drive</h3>
+              <p class="project-desc">Led team to double school's donation record (250 to 559 items) through strategic marketing, poster design, and logistics coordination.</p>
+              <p class="project-tech"><em>Skills:</em> Project Management, Team Leadership, Marketing, Sales</p>
+              <div class="project-links">
+                <a href="#" class="win95-button" disabled>Community Project</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resume Window -->
+    <div class="window hidden" id="window-resume" data-title="Resume.txt - Notepad">
+      <div class="title-bar">
+        <div class="title-bar-text">
+          <span class="window-icon"><img src="/photos/script_file_blue-1.png" alt="" style="width: 16px; height: 16px;"></span>
+          Resume.txt - Notepad
+        </div>
+        <div class="title-bar-controls">
+          <button class="btn-minimize"><img src="/photos/minimize.png" alt="_"></button>
+          <button class="btn-maximize"><img src="/photos/maximize.png" alt="□"></button>
+          <button class="btn-close"><img src="/photos/closeButton.png" alt="×"></button>
+        </div>
+      </div>
+      <div class="menu-bar">
+        <span class="menu-item">File</span>
+        <span class="menu-item">Edit</span>
+        <span class="menu-item">Search</span>
+        <span class="menu-item">Help</span>
+      </div>
+      <div class="window-body notepad-style">
+        <pre>KIAN KHOOBAN
+Software Engineer | Computer Science Student
+=====================================
+
+CONTACT:
+  Email: kiankhooban@gmail.com
+  GitHub: github.com/kiankhooban
+  LinkedIn: linkedin.com/in/kiankhooban
+  Location: Toronto, ON, Canada
+
+ABOUT:
+------
+Second-Year Computer Science Student @ Lassonde School of Engineering
+Part-Time Developer | Team Leader | Peer Tutor
+
+WORK EXPERIENCE:
+----------------
+[Technical Trainee - HOSHMAND AFARIN INC]
+Apr 2025 - Present | Toronto, Ontario
+• Contributing to renewable energy and Bitcoin mining startup
+• Developing internal website using JavaScript, Node.js, HTML, CSS
+• Supporting Linux-based mining infrastructure setup and monitoring
+• Collaborating with team to align development with operational goals
+
+[Peer Tutor - York University]
+Sep 2025 - Present | North York, ON
+• Providing academic support through one-on-one tutoring sessions
+• Assisting students with test preparation and course concepts
+• Maintaining session records and tracking student progress
+• Strengthening communication, leadership, and mentorship skills
+
+VOLUNTEER EXPERIENCE:
+--------------------
+[Team Leader - GVSS Holiday Charity Drive]
+Oct 2023 - Dec 2025 | Georges Vanier Secondary School
+• Led team supporting Toronto Firefighters Charity
+• Doubled school's donation record: 250 to 559 items
+• Managed marketing, advertising, poster design, and logistics
+• Conducted surveys and created progress tracking charts
+
+[Office Assistant - Forest Manor Public School]
+Feb 2024 - Jul 2024 | North York, ON
+• Supported office operations at one of Toronto's largest schools
+• Designed school boards, hallways, posters, and vouchers
+• Boosted Fun Fair profits by 25% through creative designs
+• Sold most tickets, showcasing marketing and sales abilities
+
+EDUCATION:
+----------
+Bachelor's Degree in Computer Science
+Lassonde School of Engineering - York University
+Expected Graduation: January 2028
+
+CERTIFICATIONS:
+--------------
+Learning Linux Command Line - LinkedIn (May 2025)
+
+SKILLS:
+-------
+Languages: Java, JavaScript, C, HTML, CSS
+Technologies: Node.js, Linux, Git, Shell Scripting
+Tools: Microsoft Office, CLI, Unit Testing
+Soft Skills: Project Management, Team Leadership, Research,
+             Sales Growth, Communication, Mentorship
+
+DOWNLOAD FULL RESUME:
+---------------------
+[PDF version available in repository]
+</pre>
+      </div>
+    </div>
+
+    <!-- Skills Window -->
+    <div class="window hidden" id="window-skills" data-title="Skills.exe">
+      <div class="title-bar">
+        <div class="title-bar-text">
+          <span class="window-icon"><img src="/photos/console_prompt-0.png" alt="" style="width: 16px; height: 16px;"></span>
+          Skills.exe
+        </div>
+        <div class="title-bar-controls">
+          <button class="btn-minimize"><img src="/photos/minimize.png" alt="_"></button>
+          <button class="btn-maximize"><img src="/photos/maximize.png" alt="□"></button>
+          <button class="btn-close"><img src="/photos/closeButton.png" alt="×"></button>
+        </div>
+      </div>
+      <div class="window-body">
+        <h2><img src="/photos/console_prompt-0.png" alt="" style="width: 20px; height: 20px; vertical-align: middle;"> Technical Skills</h2>
+        
+        <h3>Programming Languages</h3>
+        <div class="skill-item">
+          <label>JavaScript</label>
+          <div class="skill-bar">
+            <div class="skill-fill" style="width: 85%" data-level="85"></div>
+          </div>
+          <span class="skill-percent">85%</span>
+        </div>
+        <div class="skill-item">
+          <label>Java</label>
+          <div class="skill-bar">
+            <div class="skill-fill" style="width: 80%" data-level="80"></div>
+          </div>
+          <span class="skill-percent">80%</span>
+        </div>
+        <div class="skill-item">
+          <label>C</label>
+          <div class="skill-bar">
+            <div class="skill-fill" style="width: 75%" data-level="75"></div>
+          </div>
+          <span class="skill-percent">75%</span>
+        </div>
+        <div class="skill-item">
+          <label>HTML/CSS</label>
+          <div class="skill-bar">
+            <div class="skill-fill" style="width: 90%" data-level="90"></div>
+          </div>
+          <span class="skill-percent">90%</span>
+        </div>
+
+        <h3>Technologies & Tools</h3>
+        <div class="skill-item">
+          <label>Node.js</label>
+          <div class="skill-bar">
+            <div class="skill-fill" style="width: 80%" data-level="80"></div>
+          </div>
+          <span class="skill-percent">80%</span>
+        </div>
+        <div class="skill-item">
+          <label>Linux</label>
+          <div class="skill-bar">
+            <div class="skill-fill" style="width: 85%" data-level="85"></div>
+          </div>
+          <span class="skill-percent">85%</span>
+        </div>
+        <div class="skill-item">
+          <label>Git</label>
+          <div class="skill-bar">
+            <div class="skill-fill" style="width: 88%" data-level="88"></div>
+          </div>
+          <span class="skill-percent">88%</span>
+        </div>
+
+        <h3>Additional Skills</h3>
+        <div class="skill-item">
+          <label>Shell Scripting</label>
+          <div class="skill-bar">
+            <div class="skill-fill" style="width: 75%" data-level="75"></div>
+          </div>
+          <span class="skill-percent">75%</span>
+        </div>
+        <div class="skill-item">
+          <label>Project Management</label>
+          <div class="skill-bar">
+            <div class="skill-fill" style="width: 90%" data-level="90"></div>
+          </div>
+          <span class="skill-percent">90%</span>
+        </div>
+        <div class="skill-item">
+          <label>Team Leadership</label>
+          <div class="skill-bar">
+            <div class="skill-fill" style="width: 92%" data-level="92"></div>
+          </div>
+          <span class="skill-percent">92%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Window -->
+    <div class="window hidden" id="window-contact" data-title="Contact">
+      <div class="title-bar">
+        <div class="title-bar-text">
+          <span class="window-icon"><img src="/photos/contactInside.png" alt="" style="width: 16px; height: 16px;"></span>
+          Contact Me
+        </div>
+        <div class="title-bar-controls">
+          <button class="btn-minimize"><img src="/photos/minimize.png" alt="_"></button>
+          <button class="btn-maximize"><img src="/photos/maximize.png" alt="□"></button>
+          <button class="btn-close"><img src="/photos/closeButton.png" alt="×"></button>
+        </div>
+      </div>
+      <div class="window-body">
+        <h2><img src="/photos/contactMe.png" alt="" style="width: 20px; height: 20px; vertical-align: middle;"> Get In Touch</h2>
+        <div class="contact-grid">
+          <div class="contact-item">
+            <div class="contact-icon"><img src="/photos/gmail.png" alt="Email"></div>
+            <div class="contact-info">
+              <strong>Email</strong>
+              <a href="mailto:kiankhooban@gmail.com">kiankhooban@gmail.com</a>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-icon"><img src="/photos/github.png" alt="GitHub"></div>
+            <div class="contact-info">
+              <strong>GitHub</strong>
+              <a href="https://github.com/kiankhooban" target="_blank">@kiankhooban</a>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-icon"><img src="/photos/linkedin.png" alt="LinkedIn"></div>
+            <div class="contact-info">
+              <strong>LinkedIn</strong>
+              <a href="https://linkedin.com/in/kiankhooban" target="_blank">linkedin.com/in/kiankhooban</a>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-icon"><img src="/photos/twitter.png" alt="Twitter"></div>
+            <div class="contact-info">
+              <strong>Twitter/X</strong>
+              <a href="https://twitter.com/kiankhooban" target="_blank">@kiankhooban</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-form">
+          <h3>Send a Message</h3>
+          <form>
+            <div class="form-group">
+              <label>Name:</label>
+              <input type="text" class="win95-input" placeholder="Your name">
+            </div>
+            <div class="form-group">
+              <label>Email:</label>
+              <input type="email" class="win95-input" placeholder="your@email.com">
+            </div>
+            <div class="form-group">
+              <label>Message:</label>
+              <textarea class="win95-textarea" rows="4" placeholder="Your message..."></textarea>
+            </div>
+            <button type="submit" class="win95-button">Send Message</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Control Panel Window -->
+    <div class="window hidden" id="window-control-panel" data-title="Control Panel">
+      <div class="title-bar">
+        <div class="title-bar-text">
+          <span class="window-icon"><img src="/photos/Control_Panel_1995.svg" alt="" style="width: 16px; height: 16px;"></span>
+          Control Panel
+        </div>
+        <div class="title-bar-controls">
+          <button class="btn-minimize"><img src="/photos/minimize.png" alt="_"></button>
+          <button class="btn-maximize"><img src="/photos/maximize.png" alt="□"></button>
+          <button class="btn-close"><img src="/photos/closeButton.png" alt="×"></button>
+        </div>
+      </div>
+      <div class="window-body">
+        <h2><img src="/photos/Control_Panel_1995.svg" alt="" style="width: 20px; height: 20px; vertical-align: middle;"> Control Panel</h2>
+        
+        <div class="control-section">
+          <h3><img src="/photos/apperance.png" alt="" style="width: 18px; height: 18px; vertical-align: middle;"> Appearance</h3>
+          <p>Choose a color scheme for your desktop:</p>
+          
+          <div class="theme-selector">
+            <label for="themeSelect"><strong>Theme:</strong></label>
+            <select id="themeSelect" class="win95-select">
+  <!-- <option value="colorful">Colorful (Modern Retro) ⭐</option> -->
+  <option value="original">Windows Standard (Teal)</option>
+  <option value="rose">Rose</option>
+  <option value="blue">Blue</option>
+  <option value="slate">Slate</option>
+  <option value="pumpkin">Pumpkin</option>
+  <option value="olive">Olive</option>
+  <option value="marine">Marine</option>
+  <option value="raindrop">Raindrop</option>
+</select>
+          </div>
+
+          <div class="theme-preview" id="themePreview">
+            <div class="preview-window">
+              <div class="preview-titlebar">
+                <span>Sample Window</span>
+              </div>
+              <div class="preview-body">
+                Theme Preview
+              </div>
+            </div>
+          </div>
+
+          <button id="applyTheme" class="win95-button primary">Apply Theme</button>
+        </div>
+
+        <div class="control-section">
+          <h3><img src="/photos/info.png" alt="" style="width: 18px; height: 18px; vertical-align: middle;"> System Information</h3>
+          <p><strong>Portfolio OS:</strong> Windows 95 Edition</p>
+          <p><strong>Version:</strong> 1.0.0</p>
+          <p><strong>User:</strong> Kian Khooban</p>
+          <p><strong>Role:</strong> Software Engineer | CS Student @ York University</p>
+          <p><strong>Built with:</strong> HTML, CSS, JavaScript <img src="/photos/shine.png" alt="" style="width: 16px; height: 16px; vertical-align: middle;"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- GAMES WINDOW TEMPORARILY DISABLED
+    <div class="window hidden" id="window-games" data-title="Games">
+      <div class="title-bar">
+        <div class="title-bar-text">
+          <span class="window-icon"><img src="/photos/computer_explorer-2.png" alt="" style="width: 16px; height: 16px;"></span>
+          Games & Easter Eggs
+        </div>
+        <div class="title-bar-controls">
+          <button class="btn-minimize"><img src="/photos/minimize.png" alt="_"></button>
+          <button class="btn-maximize"><img src="/photos/maximize.png" alt="□"></button>
+          <button class="btn-close"><img src="/photos/closeButton.png" alt="×"></button>
+        </div>
+      </div>
+      <div class="window-body">
+        <h2>🎮 Games & Fun Stuff</h2>
+        <p>Classic Windows 95 games and easter eggs coming soon!</p>
+        
+        <div class="games-grid">
+          <div class="game-item">
+            <div class="game-icon">💣</div>
+            <h3>Minesweeper</h3>
+            <p>Classic puzzle game</p>
+            <button class="win95-button" disabled>Coming Soon</button>
+          </div>
+
+          <div class="game-item">
+            <div class="game-icon">🃏</div>
+            <h3>Solitaire</h3>
+            <p>Card game classic</p>
+            <button class="win95-button" disabled>Coming Soon</button>
+          </div>
+
+          <div class="game-item">
+            <div class="game-icon">🎨</div>
+            <h3>Paint</h3>
+            <p>Simple drawing app</p>
+            <button class="win95-button" disabled>Coming Soon</button>
+          </div>
+
+          <div class="game-item">
+            <div class="game-icon">⚠️</div>
+            <h3>Error Generator</h3>
+            <p>Create fake errors!</p>
+            <button class="win95-button" onclick="alert('Error: Task failed successfully! 😄')">Try Me</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    -->
+
+    <!-- Recycle Bin Window -->
+    <div class="window hidden" id="window-recycle" data-title="Recycle Bin">
+      <div class="title-bar">
+        <div class="title-bar-text">
+          <span class="window-icon"><img src="/photos/conn_dialup_recbin_phone.png" alt="" style="width: 16px; height: 16px;"></span>
+          Recycle Bin
+        </div>
+        <div class="title-bar-controls">
+          <button class="btn-minimize"><img src="/photos/minimize.png" alt="_"></button>
+          <button class="btn-maximize"><img src="/photos/maximize.png" alt="□"></button>
+          <button class="btn-close"><img src="/photos/closeButton.png" alt="×"></button>
+        </div>
+      </div>
+      <div class="window-body">
+        <h2><img src="/photos/conn_dialup_recbin_phone.png" alt="" style="width: 20px; height: 20px; vertical-align: middle;"> Recycle Bin</h2>
+        <div class="recycle-empty">
+          <p><em>Recycle Bin is empty.</em></p>
+          <p>All my code is perfect<img src="/photos/info.png" alt="" style="width: 14px; height: 14px; vertical-align: middle;"> No bugs here. <img src="/photos/smile.png" alt="" style="width: 14px; height: 14px; vertical-align: middle;"></p>
+        </div>
+        <div class="recycle-items hidden">
+          <div class="file-item">
+            <span class="file-icon"><img src="/photos/documents.png" alt="" style="width: 16px; height: 16px; vertical-align: middle;"></span>
+            <span class="file-name">bad_code.js</span>
+            <span class="file-date">Deleted: Never</span>
+          </div>
+          <div class="file-item">
+            <span class="file-icon"><img src="/photos/bugs.png" alt="" style="width: 16px; height: 16px; vertical-align: middle;"></span>
+            <span class="file-name">bugs.txt</span>
+            <span class="file-date">Deleted: 404 Not Found</span>
+          </div>
+        </div>
+        <button class="win95-button">Empty Recycle Bin</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="/desktop.js"></script>
+</body>
+</html>
