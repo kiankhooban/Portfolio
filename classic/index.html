@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Portfolio BIOS Boot Sequence</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div id="boot-screen" class="boot-screen">
+    <div class="bios-header">
+      <div class="header-line">ROM PCI/ISA BIOS (KIAN2024)</div>
+      <div class="header-line">CMOS SETUP UTILITY</div>
+      <div class="header-line">AWARD SOFTWARE, INC.</div>
+    </div>
+    <div class="bios-separator"></div>
+    <div class="bios-content">
+      <pre id="output" class="output"></pre>
+    </div>
+    <div class="bios-separator"></div>
+    <div class="bios-status">
+      <span id="status-text">Loading</span><span id="status-spinner" class="status-spinner"></span>
+    </div>
+  </div>
+  <script src="/script.js"></script>
+</body>
+</html>
