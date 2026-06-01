@@ -167,7 +167,7 @@ async function boot() {
   bootScreen.classList.add("fade-out");
   await sleep(600);
   bootScreen.style.display = "none";
-  window.location.href = "desktop.html";
+  window.location.href = "/desktop";
 }
 
 // Start boot on page load
