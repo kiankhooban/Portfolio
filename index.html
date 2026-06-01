@@ -1,37 +1,1468 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Portfolio BIOS Boot Sequence</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kian Khooban</title>
+  <meta name="description" content="ML researcher and hardware engineer at York University. Classifying gastric ultrasound images to predict anesthesia risk. Building sub-quadratic arithmetic on FPGA.">
+  <meta property="og:title" content="Kian Khooban">
+  <meta property="og:description" content="ML researcher and hardware engineer at York University.">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── TOKENS ─────────────────────────────────────────── */
+    :root {
+      --bg:           oklch(0.10 0.012 248);
+      --bg-surface:   oklch(0.14 0.012 248);
+      --bg-elevated:  oklch(0.18 0.012 248);
+      --accent:       oklch(0.78 0.13 205);
+      --accent-dim:   oklch(0.78 0.06 205);
+      --text:         oklch(0.94 0.008 248);
+      --text-2:       oklch(0.62 0.008 248);
+      --text-3:       oklch(0.42 0.008 248);
+      --border:       oklch(0.22 0.012 248);
+      --border-2:     oklch(0.28 0.012 248);
+
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body:    'DM Sans', sans-serif;
+      --font-mono:    'JetBrains Mono', monospace;
+
+      --radius-sm: 6px;
+      --radius:    10px;
+      --radius-lg: 16px;
+
+      --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+      --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+    }
+
+    /* ─── RESET ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ─── LAYOUT ─────────────────────────────────────────── */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+    @media (max-width: 768px) {
+      .container { padding: 0 20px; }
+    }
+
+    /* ─── NAV ────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      background: oklch(0.10 0.012 248 / 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+    .nav-name {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    .nav-name span {
+      color: var(--accent);
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.875rem;
+      color: var(--text-2);
+      transition: color 160ms var(--ease-out);
+      font-family: var(--font-body);
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent) !important;
+      letter-spacing: 0.04em;
+    }
+    @media (max-width: 640px) {
+      .nav-links { gap: 20px; }
+      .nav-links li:nth-child(2),
+      .nav-links li:nth-child(3) { display: none; }
+    }
+
+    /* ─── WIN95 NAV BUTTON ──────────────────────────────────── */
+    .nav-win95-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 0;
+      color: var(--text-2);
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 100ms ease-out, font-family 0ms;
+      isolation: isolate;
+    }
+    /* Win95 chrome appears as pseudo-element so layout never shifts */
+    .nav-win95-btn::before {
+      content: '';
+      position: absolute;
+      inset: -3px -9px;
+      background: #C0C0C0;
+      border-top: 2px solid #FFFFFF;
+      border-left: 2px solid #FFFFFF;
+      border-bottom: 2px solid #000000;
+      border-right: 2px solid #000000;
+      box-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #DFDFDF;
+      opacity: 0;
+      transition: opacity 120ms ease-out;
+      z-index: -1;
+    }
+    .nav-win95-btn:hover::before { opacity: 1; }
+    .nav-win95-btn:hover {
+      color: #000000 !important;
+      font-family: 'Tahoma', 'MS Sans Serif', system-ui, sans-serif;
+    }
+    .nav-win95-btn:active::before {
+      border-top: 2px solid #000000;
+      border-left: 2px solid #000000;
+      border-bottom: 2px solid #FFFFFF;
+      border-right: 2px solid #FFFFFF;
+      box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #DFDFDF;
+    }
+    /* ⊞ icon slides in from zero width */
+    .win95-icon-wrap {
+      display: inline-block;
+      width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      transition: width 160ms ease-out;
+      font-size: 0.7rem;
+      line-height: 1;
+    }
+    .nav-win95-btn:hover .win95-icon-wrap { width: 1.3em; }
+    /* .exe slides in after a brief delay */
+    .win95-ext {
+      display: inline-block;
+      max-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      transition: max-width 200ms ease-out 60ms;
+    }
+    .nav-win95-btn:hover .win95-ext { max-width: 3em; }
+    /* Win95 popup window */
+    .win95-popup {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: -9px;
+      min-width: 196px;
+      background: #C0C0C0;
+      border-top: 2px solid #FFFFFF;
+      border-left: 2px solid #FFFFFF;
+      border-bottom: 2px solid #000000;
+      border-right: 2px solid #000000;
+      box-shadow: 2px 2px 0 #000000;
+      font-family: 'Tahoma', 'MS Sans Serif', system-ui, sans-serif;
+      color: #000;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-6px);
+      transition: opacity 80ms ease-out, transform 80ms ease-out;
+      z-index: 200;
+    }
+    .nav-win95-btn:hover .win95-popup {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .win95-title-bar {
+      background: linear-gradient(90deg, #000080 0%, #1084d0 100%);
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: bold;
+      padding: 2px 2px 2px 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      user-select: none;
+    }
+    .win95-title-bar span:first-child { flex: 1; font-size: 0.62rem; }
+    .win95-close-btn {
+      background: #C0C0C0;
+      border-top: 1px solid #FFFFFF;
+      border-left: 1px solid #FFFFFF;
+      border-bottom: 1px solid #000;
+      border-right: 1px solid #000;
+      box-shadow: inset -1px -1px 0 #808080;
+      color: #000;
+      font-size: 0.55rem;
+      width: 16px;
+      height: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      flex-shrink: 0;
+      font-family: 'Tahoma', system-ui, sans-serif;
+    }
+    .win95-popup-body {
+      padding: 8px 10px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .win95-popup-body p {
+      font-size: 0.68rem;
+      color: #000;
+      line-height: 1.45;
+    }
+    .win95-popup-url {
+      font-size: 0.65rem;
+      color: #000080;
+      text-decoration: underline;
+      font-family: 'Tahoma', 'MS Sans Serif', system-ui, sans-serif;
+    }
+    .win95-progress {
+      height: 12px;
+      background: #fff;
+      border-top: 1px solid #808080;
+      border-left: 1px solid #808080;
+      border-bottom: 1px solid #DFDFDF;
+      border-right: 1px solid #DFDFDF;
+      overflow: hidden;
+      margin-top: 3px;
+    }
+    .win95-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #000080;
+      animation: win95load 1.4s ease-in-out infinite;
+      animation-play-state: paused;
+    }
+    .nav-win95-btn:hover .win95-progress-bar { animation-play-state: running; }
+    @keyframes win95load {
+      0%   { width: 0%;   margin-left: 0%; }
+      40%  { width: 55%;  margin-left: 0%; }
+      60%  { width: 55%;  margin-left: 45%; }
+      100% { width: 0%;   margin-left: 100%; }
+    }
+
+    /* ─── HERO ───────────────────────────────────────────── */
+    #hero {
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      padding-top: 64px;
+    }
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 80px;
+      align-items: center;
+      width: 100%;
+    }
+    .hero-left {}
+    .hero-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-2);
+      letter-spacing: 0.04em;
+      margin-bottom: 28px;
+    }
+    .hero-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.35; }
+    }
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1.04;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      text-wrap: balance;
+      margin-bottom: 24px;
+    }
+    .hero-descriptor {
+      font-size: 1.125rem;
+      color: var(--text-2);
+      line-height: 1.65;
+      max-width: 52ch;
+      margin-bottom: 40px;
+    }
+    .hero-descriptor strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent);
+      color: oklch(0.10 0.012 248);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.875rem;
+      padding: 12px 24px;
+      border-radius: var(--radius-sm);
+      transition: transform 160ms var(--ease-out), opacity 160ms var(--ease-out);
+      white-space: nowrap;
+    }
+    .btn-primary:active { transform: scale(0.97); }
+    .btn-primary:hover { opacity: 0.88; }
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-2);
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-2);
+      transition: color 160ms var(--ease-out), border-color 160ms var(--ease-out);
+      white-space: nowrap;
+    }
+    .btn-ghost:hover { color: var(--text); border-color: var(--text-2); }
+
+    /* Hero right: live context panel */
+    .hero-panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--bg-surface);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .panel-label {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-3);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .panel-entry {
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .panel-entry:last-child {
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .panel-title {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .panel-body {
+      font-size: 0.8rem;
+      color: var(--text-2);
+      line-height: 1.55;
+    }
+    .panel-tag {
+      display: inline-block;
+      margin-top: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.67rem;
+      color: var(--accent);
+      background: oklch(0.62 0.22 15 / 0.10);
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+    .panel-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .stack-chip {
+      font-family: var(--font-mono);
+      font-size: 0.67rem;
+      color: var(--text-2);
+      background: var(--bg-elevated);
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    @media (max-width: 900px) {
+      .hero-inner {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+      .hero-panel { display: none; }
+    }
+
+    /* ─── SECTION SHARED ─────────────────────────────────── */
+    section { padding: 96px 0; }
+    .section-header {
+      margin-bottom: 56px;
+    }
+    .section-header h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--text);
+      text-wrap: balance;
+    }
+    .section-header .sub {
+      font-size: 1rem;
+      color: var(--text-2);
+      margin-top: 10px;
+      max-width: 55ch;
+    }
+
+    /* ─── WORK ───────────────────────────────────────────── */
+    #work {
+      border-top: 1px solid var(--border);
+    }
+
+    /* Project: Arrive - featured, full row */
+    .project-featured {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 24px;
+      transition: border-color 200ms var(--ease-out);
+    }
+    .project-featured:hover { border-color: var(--border-2); }
+    .project-featured-content {
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .project-featured-visual {
+      background: var(--bg-surface);
+      min-height: 340px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .project-featured-visual img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.7;
+      transition: opacity 400ms var(--ease-out), transform 600ms var(--ease-out);
+    }
+    .project-featured:hover .project-featured-visual img {
+      opacity: 0.85;
+      transform: scale(1.03);
+    }
+    .project-visual-placeholder {
+      width: 100%;
+      height: 100%;
+      background: var(--bg-surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .arrive-graphic {
+      width: 180px;
+      opacity: 0.6;
+    }
+
+    /* Two-column pair */
+    .project-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    .project-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--bg-surface);
+      padding: 36px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: border-color 200ms var(--ease-out), background 200ms var(--ease-out);
+      min-height: 280px;
+    }
+    .project-card:hover {
+      border-color: var(--border-2);
+      background: var(--bg-elevated);
+    }
+
+    /* Full-width horizontal project */
+    .project-wide {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: border-color 200ms var(--ease-out);
+    }
+    .project-wide:hover { border-color: var(--border-2); }
+    .project-wide-content {
+      padding: 40px;
+    }
+    .project-wide-meta {
+      background: var(--bg-surface);
+      padding: 40px;
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* Shared project elements */
+    .project-type {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-3);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .project-name {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.375rem;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .project-desc {
+      font-size: 0.9rem;
+      color: var(--text-2);
+      line-height: 1.6;
+      max-width: 52ch;
+      margin-bottom: 20px;
+    }
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 24px;
+    }
+    .tag {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-2);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      padding: 4px 9px;
+      border-radius: var(--radius-sm);
+    }
+    .tag-accent {
+      color: var(--accent);
+      background: oklch(0.62 0.22 15 / 0.08);
+      border-color: oklch(0.62 0.22 15 / 0.25);
+    }
+    .project-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 0.82rem;
+      color: var(--text-2);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 2px;
+      transition: color 160ms, border-color 160ms;
+    }
+    .project-link:hover { color: var(--accent); border-color: var(--accent); }
+    .project-links { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+
+    @media (max-width: 768px) {
+      .project-featured { grid-template-columns: 1fr; }
+      .project-featured-visual { display: none; }
+      .project-pair { grid-template-columns: 1fr; }
+      .project-wide { grid-template-columns: 1fr; }
+      .project-wide-meta { display: none; }
+    }
+
+    /* ─── RESEARCH ───────────────────────────────────────── */
+    #research {
+      border-top: 1px solid var(--border);
+    }
+    .research-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: var(--border);
+    }
+    .research-track {
+      background: var(--bg-surface);
+      padding: 48px;
+    }
+    .research-track-label {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-3);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .research-track h3 {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    .research-track p {
+      font-size: 0.9rem;
+      color: var(--text-2);
+      line-height: 1.65;
+      margin-bottom: 20px;
+      max-width: 48ch;
+    }
+    .research-detail {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-3);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      line-height: 1.7;
+    }
+    .research-detail .key {
+      color: var(--accent);
+    }
+    .research-supervisor {
+      font-size: 0.82rem;
+      color: var(--text-3);
+    }
+    .research-supervisor strong {
+      color: var(--text-2);
+      font-weight: 500;
+    }
+    @media (max-width: 768px) {
+      .research-grid { grid-template-columns: 1fr; }
+      .research-track { padding: 32px 24px; }
+    }
+
+    /* ─── ABOUT ──────────────────────────────────────────── */
+    #about {
+      border-top: 1px solid var(--border);
+    }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+    .about-left h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      margin-bottom: 24px;
+      text-wrap: balance;
+    }
+    .about-left h2 em {
+      font-style: italic;
+      color: var(--text-2);
+    }
+    .about-left p {
+      font-size: 1rem;
+      color: var(--text-2);
+      line-height: 1.7;
+      max-width: 52ch;
+      margin-bottom: 16px;
+    }
+    .about-left p strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+    .about-right {}
+    .fact-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .fact-row {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: baseline;
+    }
+    .fact-row:first-child { border-top: 1px solid var(--border); }
+    .fact-key {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-3);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .fact-val {
+      font-size: 0.9rem;
+      color: var(--text-2);
+      line-height: 1.5;
+    }
+    .fact-val strong { color: var(--text); font-weight: 500; }
+
+    @media (max-width: 768px) {
+      .about-grid { grid-template-columns: 1fr; gap: 48px; }
+    }
+
+    /* ─── STACK ──────────────────────────────────────────── */
+    #stack {
+      border-top: 1px solid var(--border);
+      padding: 64px 0;
+    }
+    .stack-header {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-3);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+    .stack-scroll {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .stack-item {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-2);
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      transition: color 160ms, border-color 160ms;
+      cursor: default;
+    }
+    .stack-item:hover { color: var(--text); border-color: var(--border-2); }
+    .stack-item.primary { color: var(--accent); border-color: oklch(0.62 0.22 15 / 0.25); background: oklch(0.62 0.22 15 / 0.06); }
+
+    /* ─── CONTACT ────────────────────────────────────────── */
+    #contact {
+      border-top: 1px solid var(--border);
+      padding: 96px 0;
+    }
+    .contact-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: end;
+    }
+    .contact-left h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 20px;
+      text-wrap: balance;
+    }
+    .contact-left p {
+      font-size: 1rem;
+      color: var(--text-2);
+      max-width: 44ch;
+      line-height: 1.65;
+      margin-bottom: 36px;
+    }
+    .contact-email {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 2px;
+      display: inline-block;
+      transition: opacity 160ms;
+    }
+    .contact-email:hover { opacity: 0.75; }
+    .contact-right {}
+    .social-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .social-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .social-item:first-child { border-top: 1px solid var(--border); }
+    .social-name {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+    .social-handle {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-3);
+      transition: color 160ms;
+    }
+    .social-item:hover .social-handle { color: var(--accent); }
+    .social-item a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      transition: transform 200ms var(--ease-out);
+    }
+    .social-item:hover a { transform: translateX(4px); }
+
+    /* ─── FOOTER ─────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+    }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-left {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-3);
+    }
+    .footer-left span { color: var(--accent); }
+    .footer-right {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-3);
+    }
+
+    @media (max-width: 768px) {
+      .contact-inner { grid-template-columns: 1fr; gap: 48px; }
+      .footer-inner { flex-direction: column; gap: 8px; text-align: center; }
+    }
+
+    /* ─── CANVAS BACKGROUND ─────────────────────────────── */
+    #bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+    nav, section, footer { position: relative; z-index: 1; }
+
+    /* ─── SCROLL REVEAL ──────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out);
+    }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 80ms; }
+    .reveal-delay-2 { transition-delay: 160ms; }
+    .reveal-delay-3 { transition-delay: 240ms; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+      @keyframes pulse { from, to { opacity: 1; } }
+    }
+
+    /* ─── SELECTION ──────────────────────────────────────── */
+    ::selection {
+      background: oklch(0.62 0.22 15 / 0.25);
+      color: var(--text);
+    }
+  </style>
 </head>
 <body>
-  <div id="boot-screen" class="boot-screen">
-    <!-- Top Header (Fixed) -->
-    <div class="bios-header">
-      <div class="header-line">ROM PCI/ISA BIOS (KIAN2024)</div>
-      <div class="header-line">CMOS SETUP UTILITY</div>
-      <div class="header-line">AWARD SOFTWARE, INC.</div>
+
+  <!-- NEURAL NETWORK CANVAS -->
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+  <!-- NAV -->
+  <nav>
+    <div class="container">
+      <div class="nav-name">Kian Khooban<span>.</span></div>
+      <ul class="nav-links">
+        <li><a href="#work">Work</a></li>
+        <li><a href="#research">Research</a></li>
+        <li><a href="#about">About</a></li>
+        <li>
+          <a href="https://kiankhooban.com" target="_blank" rel="noopener" class="nav-win95-btn">
+            <span class="win95-icon-wrap"><span>⊞&nbsp;</span></span><span>classic</span><span class="win95-ext">.exe</span>
+            <div class="win95-popup">
+              <div class="win95-title-bar">
+                <span>Classic Portfolio</span>
+                <span class="win95-close-btn">✕</span>
+              </div>
+              <div class="win95-popup-body">
+                <p>You found the original version.</p>
+                <span class="win95-popup-url">kiankhooban.com →</span>
+                <div class="win95-progress">
+                  <div class="win95-progress-bar"></div>
+                </div>
+              </div>
+            </div>
+          </a>
+        </li>
+        <li><a href="mailto:kiankhooban8800@gmail.com" class="nav-cta">Get in touch</a></li>
+      </ul>
     </div>
+  </nav>
 
-    <!-- Separator Line -->
-    <div class="bios-separator"></div>
-
-    <!-- Middle Content Area (Scrollable) -->
-    <div class="bios-content">
-      <pre id="output" class="output"></pre>
+  <!-- HERO -->
+  <section id="hero">
+    <div class="container">
+      <div class="hero-inner">
+        <div class="hero-left">
+          <div class="hero-status">
+            <div class="hero-status-dot"></div>
+            York University CS &middot; entering year 3, Fall 2026
+          </div>
+          <h1>ML Researcher.<br>Hardware Engineer.</h1>
+          <p class="hero-descriptor">
+            Classifying gastric ultrasound images to predict anesthesia risk before surgery.
+            Building sub-quadratic arithmetic on FPGA for AI workloads.
+            <strong>Two tracks, one focus: precision where it matters.</strong>
+          </p>
+          <div class="hero-actions">
+            <a href="#work" class="btn-primary">Selected work</a>
+            <a href="mailto:kiankhooban8800@gmail.com" class="btn-ghost">kiankhooban8800@gmail.com &rarr;</a>
+          </div>
+        </div>
+        <div class="hero-panel">
+          <div class="panel-entry">
+            <div class="panel-label">Active research</div>
+            <div class="panel-title">Gastric Ultrasound CNN</div>
+            <div class="panel-body">Classifying stomach content using Perlas 3-point scale (Grade 0-3) from antrum cross-sectional area measurements.</div>
+            <div class="panel-tag">PyTorch + MONAI + U-Net</div>
+          </div>
+          <div class="panel-entry">
+            <div class="panel-label">Hardware research</div>
+            <div class="panel-title">B4G3 on Artix-7 FPGA</div>
+            <div class="panel-body">Implementing B4G3 floating-point multiplication with explicit CARRY4 instantiation to resolve delay penalties in AI inference.</div>
+            <div class="panel-tag">SystemVerilog + Vivado</div>
+          </div>
+          <div class="panel-entry">
+            <div class="panel-label">Stack</div>
+            <div class="panel-stack">
+              <span class="stack-chip">Python</span>
+              <span class="stack-chip">PyTorch</span>
+              <span class="stack-chip">MONAI</span>
+              <span class="stack-chip">SystemVerilog</span>
+              <span class="stack-chip">React</span>
+              <span class="stack-chip">SQL</span>
+              <span class="stack-chip">C++</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </section>
 
-    <!-- Bottom Separator -->
-    <div class="bios-separator"></div>
+  <!-- WORK -->
+  <section id="work">
+    <div class="container">
+      <div class="section-header reveal">
+        <h2>Selected Work</h2>
+        <p class="sub">Projects across medical AI, hardware design, and civic technology.</p>
+      </div>
 
-    <!-- Bottom Status Bar (Fixed) -->
-    <div class="bios-status">
-      <span id="status-text">Loading</span><span id="status-spinner" class="status-spinner"></span>
+      <!-- Featured: Arrive -->
+      <div class="project-featured reveal">
+        <div class="project-featured-content">
+          <div>
+            <div class="project-type">Civic Tech &middot; Hackathon</div>
+            <div class="project-name">Arrive</div>
+            <p class="project-desc">
+              AI-powered settlement navigator for refugees and immigrants in Canada. Built for the IBM Z x UNSA Sheridan Hackathon 2026. Connects newcomers to legal aid, settlement services, and support organizations through a watsonx.ai-powered search interface.
+            </p>
+            <div class="project-tags">
+              <span class="tag tag-accent">IBM Z Hackathon 2026</span>
+              <span class="tag">React + Vite</span>
+              <span class="tag">watsonx.ai</span>
+              <span class="tag">Vercel</span>
+            </div>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/kiankhooban/Arrive" target="_blank" rel="noopener" class="project-link">
+              GitHub &rarr;
+            </a>
+          </div>
+        </div>
+        <div class="project-featured-visual">
+          <svg class="arrive-graphic" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="40" width="160" height="80" rx="8" stroke="oklch(0.78 0.13 205)" stroke-width="1.5" fill="none" opacity="0.4"/>
+            <rect x="36" y="60" width="80" height="8" rx="3" fill="oklch(0.78 0.13 205)" opacity="0.5"/>
+            <rect x="36" y="76" width="56" height="6" rx="2.5" fill="oklch(0.78 0.13 205)" opacity="0.25"/>
+            <rect x="36" y="90" width="64" height="6" rx="2.5" fill="oklch(0.78 0.13 205)" opacity="0.25"/>
+            <circle cx="148" cy="78" r="16" stroke="oklch(0.78 0.13 205)" stroke-width="1.5" fill="none" opacity="0.5"/>
+            <path d="M142 78 L154 78 M148 72 L148 84" stroke="oklch(0.78 0.13 205)" stroke-width="1.5" opacity="0.7"/>
+            <path d="M20 20 L40 20 M60 20 L100 20 M110 20 L140 20" stroke="oklch(0.62 0.22 15 / 0.3)" stroke-width="1" stroke-dasharray="3 3"/>
+            <circle cx="20" cy="20" r="3" fill="oklch(0.78 0.13 205)" opacity="0.5"/>
+            <circle cx="180" cy="140" r="3" fill="oklch(0.78 0.13 205)" opacity="0.3"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Pair: Gastric Ultrasound + Booth Encoder -->
+      <div class="project-pair">
+        <div class="project-card reveal reveal-delay-1">
+          <div>
+            <div class="project-type">ML Research</div>
+            <div class="project-name">Gastric Ultrasound CNN</div>
+            <p class="project-desc">
+              Segmenting the gastric antrum in ultrasound images and classifying stomach content on the Perlas scale to assess aspiration risk before anesthesia in emergency surgery.
+            </p>
+            <div class="project-tags">
+              <span class="tag tag-accent">Undergraduate Research</span>
+              <span class="tag">PyTorch</span>
+              <span class="tag">MONAI</span>
+              <span class="tag">U-Net</span>
+              <span class="tag">Kaggle GPU</span>
+            </div>
+          </div>
+          <div class="project-links">
+            <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-3);">In progress &middot; Prof. N. Mohaghegh</span>
+          </div>
+        </div>
+        <div class="project-card reveal reveal-delay-2">
+          <div>
+            <div class="project-type">Digital Design &middot; SystemVerilog</div>
+            <div class="project-name">Booth Encoder Radix-2</div>
+            <p class="project-desc">
+              Complete 8x8 signed Booth multiplier in SystemVerilog. Covers partial product generation, mux logic, and full summation with signed arithmetic. Three testbenches for exhaustive coverage.
+            </p>
+            <div class="project-tags">
+              <span class="tag">SystemVerilog</span>
+              <span class="tag">Testbench</span>
+              <span class="tag">Signed Arithmetic</span>
+              <span class="tag">FPGA-ready</span>
+            </div>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/kiankhooban/booth-encoder-radix2" target="_blank" rel="noopener" class="project-link">GitHub &rarr;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Wide: Sticky-AI -->
+      <div class="project-wide reveal">
+        <div class="project-wide-content">
+          <div class="project-type">Desktop App &middot; macOS</div>
+          <div class="project-name">Sticky-AI</div>
+          <p class="project-desc">
+            macOS sticky notes powered by AI. Built in Electron with Gemini 1.5 Flash, the app extracts tasks from freeform text and organizes them automatically. Ships a Liquid Glass-inspired UI design.
+          </p>
+          <div class="project-tags">
+            <span class="tag">Electron</span>
+            <span class="tag">Gemini 1.5 Flash</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">macOS</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/kiankhooban/Sticky-AI" target="_blank" rel="noopener" class="project-link">GitHub &rarr;</a>
+          </div>
+        </div>
+        <div class="project-wide-meta">
+          <div>
+            <div class="panel-label" style="margin-bottom: 12px;">Also in the lab</div>
+            <div style="font-size: 0.85rem; color: var(--text-2); line-height: 1.6; margin-bottom: 16px;">
+              Verilog ALU (4-bit, 8 ops, overflow detection), 4x4 partial products multiplier, WiFi scanner in C++.
+            </div>
+          </div>
+          <a href="https://github.com/kiankhooban" target="_blank" rel="noopener" class="project-link" style="font-size: 0.8rem;">All repos on GitHub &rarr;</a>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <script src="script.js"></script>
+  <!-- RESEARCH -->
+  <section id="research">
+    <div class="container">
+      <div class="section-header reveal">
+        <h2>Two Research Tracks</h2>
+        <p class="sub">Medical imaging and AI hardware. Supervised undergraduate research at York University on both fronts.</p>
+      </div>
+      <div class="research-grid reveal">
+        <div class="research-track">
+          <div class="research-track-label">Track 01: Medical AI</div>
+          <h3>Perioperative Gastric Imaging</h3>
+          <p>
+            Training a CNN pipeline to classify stomach content from ultrasound images of the gastric antrum. The classification directly informs anesthesia risk decisions before emergency surgery, using the Perlas 3-point grading system.
+          </p>
+          <div class="research-detail">
+            <div><span class="key">Grade 0:</span> empty stomach</div>
+            <div><span class="key">Grade 1:</span> fluid in right lateral decubitus only</div>
+            <div><span class="key">Grade 2:</span> fluid in both positions</div>
+            <div><span class="key">Grade 3:</span> solid content</div>
+            <div style="margin-top: 8px;"><span class="key">Volume:</span> 27.0 + (14.6 &times; CSA_RLD) &minus; (1.28 &times; Age)</div>
+          </div>
+          <p class="research-supervisor">
+            Supervised by <strong>Prof. Navid Mohaghegh</strong>, York University Lassonde School of Engineering.<br>
+            Dataset sourced from Dr. Anahi Perlas group, Toronto Western Hospital.
+          </p>
+        </div>
+        <div class="research-track">
+          <div class="research-track-label">Track 02: AI Hardware</div>
+          <h3>B4G3 Arithmetic on FPGA</h3>
+          <p>
+            Implementing B4G3 (Block 4-to-3 Grundy) floating-point multiplication on the Xilinx Artix-7 FPGA using explicit CARRY4 chain instantiation. The target: resolve the ASIC delay penalties identified in Langhammer et al. (ARITH 2024) and test zero-skipping under sparse AI workloads.
+          </p>
+          <div class="research-detail">
+            <div><span class="key">Baseline:</span> B4G3 on Artix-7, explicit CARRY4 HDL</div>
+            <div><span class="key">Extension:</span> zero-encoding skipping for sparse inputs</div>
+            <div><span class="key">Target venues:</span> FPT, ARITH short paper</div>
+            <div><span class="key">Tools:</span> SystemVerilog, Vivado, Artix-7</div>
+          </div>
+          <p class="research-supervisor">
+            Supervised by <strong>Prof. AmirAli Amirsoleimani</strong>, York University.<br>
+            Based on Langhammer et al. ARITH 2024 reference implementation.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-left reveal">
+          <h2>Tehran to Toronto.<br><em>Building carefully.</em></h2>
+          <p>
+            Arrived in Canada in <strong>2021</strong> from Tehran. Now completing my third year of CS at York University's Lassonde School of Engineering, running two undergraduate research projects simultaneously.
+          </p>
+          <p>
+            I work late and think slowly. Most of what I build comes from trying to understand something precisely enough to make it work in code. The gastric ultrasound project started with a professor's failing pipeline. The hardware project started with a paper and a chip.
+          </p>
+          <p>
+            Targeting the <strong>Vector Institute</strong> for research involvement and the <strong>Anthropic Fellowship</strong> for the 2027 cohort. Attending <strong>Shopify Builder Sundays</strong> in Toronto when the registration window opens.
+          </p>
+        </div>
+        <div class="about-right reveal reveal-delay-1">
+          <div class="fact-list">
+            <div class="fact-row">
+              <span class="fact-key">School</span>
+              <span class="fact-val"><strong>York University</strong>, Lassonde School of Engineering</span>
+            </div>
+            <div class="fact-row">
+              <span class="fact-key">Program</span>
+              <span class="fact-val">BSc Computer Science, Year 3 (Fall 2026)</span>
+            </div>
+            <div class="fact-row">
+              <span class="fact-key">Languages</span>
+              <span class="fact-val">English, Farsi (Persian)</span>
+            </div>
+            <div class="fact-row">
+              <span class="fact-key">Location</span>
+              <span class="fact-val">Toronto, Ontario, Canada</span>
+            </div>
+            <div class="fact-row">
+              <span class="fact-key">Certs</span>
+              <span class="fact-val">Azure DP-900, AZ-900 (in progress) &middot; CS50 SQL</span>
+            </div>
+            <div class="fact-row">
+              <span class="fact-key">Targets</span>
+              <span class="fact-val">Vector Institute &middot; Anthropic Fellowship 2027 &middot; DS/ML internship</span>
+            </div>
+            <div class="fact-row">
+              <span class="fact-key">Open to</span>
+              <span class="fact-val">Research roles, ML engineering, hardware-adjacent positions in Toronto</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STACK -->
+  <section id="stack">
+    <div class="container">
+      <div class="stack-header reveal">Current tools</div>
+      <div class="stack-scroll reveal reveal-delay-1">
+        <span class="stack-item primary">Python</span>
+        <span class="stack-item primary">PyTorch</span>
+        <span class="stack-item primary">MONAI</span>
+        <span class="stack-item primary">SystemVerilog</span>
+        <span class="stack-item primary">Vivado</span>
+        <span class="stack-item">React</span>
+        <span class="stack-item">JavaScript</span>
+        <span class="stack-item">TypeScript</span>
+        <span class="stack-item">SQL</span>
+        <span class="stack-item">C++</span>
+        <span class="stack-item">Verilog HDL</span>
+        <span class="stack-item">Next.js</span>
+        <span class="stack-item">FastAPI</span>
+        <span class="stack-item">Docker</span>
+        <span class="stack-item">Git</span>
+        <span class="stack-item">Azure</span>
+        <span class="stack-item">Kaggle</span>
+        <span class="stack-item">CVAT</span>
+        <span class="stack-item">Electron</span>
+        <span class="stack-item">MS SQL Server</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="container">
+      <div class="contact-inner">
+        <div class="contact-left reveal">
+          <h2>Let's work together.</h2>
+          <p>
+            Open to research collaborations, ML engineering roles, and conversations about medical imaging, AI hardware, or anything at the intersection of technology and consequential problems.
+          </p>
+          <a href="mailto:kiankhooban8800@gmail.com" class="contact-email">kiankhooban8800@gmail.com</a>
+        </div>
+        <div class="contact-right reveal reveal-delay-1">
+          <ul class="social-list">
+            <li class="social-item">
+              <a href="https://github.com/kiankhooban" target="_blank" rel="noopener">
+                <span class="social-name">GitHub</span>
+                <span class="social-handle">@kiankhooban</span>
+              </a>
+            </li>
+            <li class="social-item">
+              <a href="mailto:kiankhooban8800@gmail.com">
+                <span class="social-name">Email</span>
+                <span class="social-handle">kiankhooban8800@gmail.com</span>
+              </a>
+            </li>
+            <li class="social-item">
+              <a href="https://github.com/kiankhooban/booth-encoder-radix2" target="_blank" rel="noopener">
+                <span class="social-name">Hardware Research</span>
+                <span class="social-handle">booth-encoder-radix2</span>
+              </a>
+            </li>
+            <li class="social-item">
+              <a href="https://github.com/kiankhooban/Arrive" target="_blank" rel="noopener">
+                <span class="social-name">Arrive</span>
+                <span class="social-handle">IBM Z Hackathon 2026</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-left">
+          Kian Khooban &middot; Toronto, Canada &middot; <span>2026</span>
+        </div>
+        <div class="footer-right">
+          York University &middot; Lassonde School of Engineering
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ── Neural network background ──────────────────────────
+    (function () {
+      const canvas = document.getElementById('bg-canvas');
+      const ctx = canvas.getContext('2d');
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (prefersReduced) return; // respect reduced motion
+
+      // Crimson accent in RGB for canvas use
+      const R = 56, G = 189, B = 248;
+
+      let W, H;
+      function resize() {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', () => { resize(); resetNodes(); }, { passive: true });
+
+      const COUNT = Math.min(70, Math.floor((window.innerWidth * window.innerHeight) / 18000));
+      const MAX_DIST  = 160;
+      const MOUSE_RADIUS = 180;
+
+      let nodes = [];
+      const mouse = { x: -9999, y: -9999 };
+
+      function resetNodes() {
+        nodes = Array.from({ length: COUNT }, () => ({
+          x:  Math.random() * W,
+          y:  Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.28,
+          vy: (Math.random() - 0.5) * 0.28,
+          r:  Math.random() * 1.2 + 0.8,
+        }));
+      }
+      resetNodes();
+
+      window.addEventListener('mousemove', e => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+      }, { passive: true });
+
+      let raf;
+      function tick() {
+        ctx.clearRect(0, 0, W, H);
+
+        // Update positions
+        for (const n of nodes) {
+          n.x += n.vx;
+          n.y += n.vy;
+          if (n.x < 0 || n.x > W) n.vx *= -1;
+          if (n.y < 0 || n.y > H) n.vy *= -1;
+        }
+
+        // Draw edges
+        for (let i = 0; i < nodes.length; i++) {
+          for (let j = i + 1; j < nodes.length; j++) {
+            const a = nodes[i], b = nodes[j];
+            const dx = a.x - b.x, dy = a.y - b.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist > MAX_DIST) continue;
+
+            const midX = (a.x + b.x) / 2;
+            const midY = (a.y + b.y) / 2;
+            const mdx = midX - mouse.x, mdy = midY - mouse.y;
+            const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
+            const mFactor = Math.max(0, 1 - mDist / MOUSE_RADIUS);
+
+            const baseAlpha = (1 - dist / MAX_DIST) * 0.06;
+            const alpha = baseAlpha + mFactor * 0.30;
+
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.strokeStyle = `rgba(${R},${G},${B},${alpha.toFixed(3)})`;
+            ctx.lineWidth = 0.7 + mFactor * 1.0;
+            ctx.stroke();
+          }
+        }
+
+        // Draw nodes
+        for (const n of nodes) {
+          const dx = n.x - mouse.x, dy = n.y - mouse.y;
+          const mDist = Math.sqrt(dx * dx + dy * dy);
+          const mFactor = Math.max(0, 1 - mDist / MOUSE_RADIUS);
+
+          const alpha = 0.15 + mFactor * 0.55;
+          const radius = n.r + mFactor * 2.0;
+
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${R},${G},${B},${alpha.toFixed(3)})`;
+          ctx.fill();
+        }
+
+        raf = requestAnimationFrame(tick);
+      }
+      tick();
+    })();
+
+    // ── Scroll reveal with IntersectionObserver
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+    );
+    revealEls.forEach(el => observer.observe(el));
+
+    // Hero items reveal immediately on load
+    const heroEls = document.querySelectorAll('#hero .reveal, #hero [class*="reveal"]');
+    heroEls.forEach(el => el.classList.add('in'));
+
+    // Nav active link highlight on scroll
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    const onScroll = () => {
+      let current = '';
+      sections.forEach(sec => {
+        if (window.scrollY >= sec.offsetTop - 100) current = sec.id;
+      });
+      navLinks.forEach(a => {
+        a.style.color = a.getAttribute('href') === '#' + current
+          ? 'oklch(0.94 0.008 248)'
+          : '';
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+  </script>
+
 </body>
 </html>
